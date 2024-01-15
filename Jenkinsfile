@@ -4,19 +4,20 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        echo 'Building..'
+        script {
+          dockerapp = docker.build("vitorgois/jenkins-talks:${env.BUILD_ID}", '-f ./Dockerfile .')
+        }
       }
     }
 
-    stage('Test') {
+    stage('Push') {
       steps {
-        echo 'Testing..'
-      }
-    }
-
-    stage('Deploy') {
-      steps {
-        echo 'Deploying....'
+        script {
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+            dockerapp.push("latest")
+            dockerapp.push("${env.BUILD_ID}")
+          }
+        }
       }
     }
   }
