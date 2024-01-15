@@ -23,8 +23,10 @@ pipeline {
 
     stage('Run') {
       steps {
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-          docker.image("vitorgois/jenkins-talks:${env.BUILD_ID}").run("-p 3000:3000")
+        script {
+          docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+            docker.image("vitorgois/jenkins-talks:${env.BUILD_ID}").run("-p 3000:3000")
+          }
         }
       }
     }
